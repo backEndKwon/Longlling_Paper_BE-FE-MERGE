@@ -8,8 +8,9 @@ import Tabs from 'react-bootstrap/Tabs';
 import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { get_User_data, get_My_Pages } from '../axios/api';
+import { get_User_data, get_My_Pages, get_My_Pages_PostId } from '../axios/api';
 import { useQuery } from 'react-query';
+import { motion } from "framer-motion"
 
 
 
@@ -24,7 +25,8 @@ function Mypage() {
 
   const { isError: isErrorUserData, isLoading: isLoadingUserData, data: userData } = useQuery("get_User_data", get_User_data)
   const { isError: isErrorMyPages, isLoading: isLoadingMyPages, data: myPagesData } = useQuery("get_My_Pages", get_My_Pages)
-  
+  const { isError: isError_get_My_Pages_PostId, isLoading: isLoading_get_My_Pages_PostId, data: get_My_Pages_PostId_Data } = useQuery("get_My_Pages_PostId", get_My_Pages_PostId)
+
 
   if (isLoadingUserData || isLoadingMyPages) {
     return <div>Loading...</div>;
@@ -36,66 +38,70 @@ function Mypage() {
 
   if (userData && myPagesData) {
     return (
-
-      <Page>
-        <Container>
-          <Navbar expand="lg" variant="light" bg="light">
-            <Container>
-              <Navbar.Brand href="#" onClick={() => { navigate('/home') }}><House size={24} /></Navbar.Brand>
-              <h5>Mypage</h5>
-            </Container>
-          </Navbar>
-        </Container>
-        <MyInfo>
-          <div style={{ padding: '5px' }}>내 정보</div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 1.2 } }}
+        exit={{ opacity: 0, transition: { duration: 1.2 } }}
+      >
+        <Page>
+          <Container>
+            <Navbar expand="lg" variant="light" bg="light">
+              <Container>
+                <Navbar.Brand href="#" onClick={() => { navigate('/home') }}><House size={24} /></Navbar.Brand>
+                <h5>Mypage</h5>
+              </Container>
+            </Navbar>
+          </Container>
+          <MyInfo>
+            <div style={{ padding: '5px' }}>내 정보</div>
+            <div>
+              <div style={{ padding: '5px' }}><PersonCircle size={50} /></div>
+              <div style={{ padding: '5px' }}> {userData.nickname} </div>
+              <div style={{ padding: '5px' }}> {userData.email} </div>
+            </div>
+          </MyInfo>
           <div>
-            <div style={{ padding: '5px' }}><PersonCircle size={50} /></div>
-            {/* 로그인한 사람의 닉네임과 한줄평 오게  */}
-            <div style={{ padding: '5px' }}> {userData.nickname} </div>
-            <div style={{ padding: '5px' }}> {userData.email} </div>
+            <Tabs
+              defaultActiveKey="profile" id="fill-tab-example"
+              className="mb-3" fill>
+              <Tab eventKey="profile" title="내 롤링페이퍼">
+                <MyLRP>
+                  {myPagesData.map((item) => (
+                    <Card border="dark" style={{ width: '40rem' }}>
+                      <Link to={`/paper`}
+                        style={{
+                          textDecorationLine: "none",
+                        }}>상세보기</Link>
+                      {/* <Card.Header>{card.title}</Card.Header> */}
+                      <Card.Body>
+                        <Card.Text>{item.title}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  ))}
+                </MyLRP>
+              </Tab>
+
+
+              <Tab eventKey="home" title="내가 적은 메세지">
+                <MyCom>
+                  {MyComment.map((card) => (
+                    <Card border="dark" style={{ width: '40rem' }}>
+                      {/* <Card.Header>{card.title}</Card.Header> */}
+                      <Link to={`/paper`}
+                        style={{
+                          textDecorationLine: "none"
+                        }}>상세보기</Link>
+                      <Card.Body>
+                        <Card.Text>{card.comment}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  ))}
+                </MyCom>
+              </Tab>
+            </Tabs>
           </div>
-        </MyInfo>
-        <div>
-          <Tabs
-            defaultActiveKey="profile" id="fill-tab-example"
-            className="mb-3" fill>
-            <Tab eventKey="profile" title="내 롤링페이퍼">
-              <MyLRP>
-                {myPagesData.map((item) => (
-                  <Card border="dark" style={{ width: '40rem' }}>
-                    <Link to={`/paper`}
-                      style={{
-                        textDecorationLine: "none",
-                      }}>상세보기</Link>
-                    {/* <Card.Header>{card.title}</Card.Header> */}
-                    <Card.Body>
-                      <Card.Text>{item.title}</Card.Text>
-                    </Card.Body>
-                  </Card>
-                ))}
-              </MyLRP>
-            </Tab>
-
-
-            <Tab eventKey="home" title="내가 적은 메세지">
-              <MyCom>
-                {MyComment.map((card) => (
-                  <Card border="dark" style={{ width: '40rem' }}>
-                    {/* <Card.Header>{card.title}</Card.Header> */}
-                    <Link to={`/paper`}
-                      style={{
-                        textDecorationLine: "none"
-                      }}>상세보기</Link>
-                    <Card.Body>
-                      <Card.Text>{card.comment}</Card.Text>
-                    </Card.Body>
-                  </Card>
-                ))}
-              </MyCom>
-            </Tab>
-          </Tabs>
-        </div>
-      </Page>
+        </Page>
+      </motion.div>
 
     )
   }

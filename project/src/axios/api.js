@@ -23,7 +23,6 @@ const Add_longlling_Paper = async (data) => {
 // 마이페이지 유저 데이터 가져오기
 const get_User_data = async () => {
     const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users`)
-    console.log(response.data.allMyPost)
     return response.data.data
 }
 
@@ -34,7 +33,12 @@ const get_My_Pages = async () => {
 }
 
 
-
+// 상세보기 버튼 구현을 위한 각 페이지 별 postId 가져오기 
+const get_My_Pages_PostId = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users`)
+    console.log(response.data.allMyPost)
+    return response.data
+}
 
 
 const getComment = async () => {
@@ -60,5 +64,5 @@ const deleteComment = async (id) => {
 }
 
 
-export { getComment, addComment, deleteComment, getTitle, addPaper, signup, login, Add_longlling_Paper, get_User_data, get_My_Pages }
+export { getComment, addComment, deleteComment, getTitle, addPaper, signup, login, Add_longlling_Paper, get_User_data, get_My_Pages, get_My_Pages_PostId }
 
