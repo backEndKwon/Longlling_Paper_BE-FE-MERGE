@@ -2,12 +2,17 @@ import React, { useState } from 'react'
 import styled from "styled-components"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 
 function AddComment() {
+
+    // Paper 컴포넌트에서 전달받은 postId
+    const location = useLocation()
+    const params1 = location.state.params1;
+
     const navigate = useNavigate()
 
     const [inputValue, setInputValue] = useState('')
@@ -20,7 +25,7 @@ function AddComment() {
 
     // comment(댓글) 추가 기능 
     const Add_Comment = async (data) => {
-        await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/posts/:postId/comments`, data, { withCredentials: true })
+        await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/posts/${params1}/comments`, data, { withCredentials: true })
     }
 
 
@@ -64,7 +69,7 @@ function AddComment() {
                         e.preventDefault(e)
                         onSubmitHandler()
                     }}>
-                        <TextArea rows={8} cols={30} value={inputValue.comment} onChange={inputValueHandler}></TextArea>
+                        <TextArea rows={8} cols={30} value={inputValue} onChange={inputValueHandler}></TextArea>
                         <Footer>
                             <SaveButton type="submit">저장</SaveButton>
                         </Footer>

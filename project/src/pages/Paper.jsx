@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import styled from "styled-components"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse } from "@fortawesome/free-solid-svg-icons"
-import { faPen } from "@fortawesome/free-solid-svg-icons"
-import { faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faPen, faTrash} from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, useParams } from 'react-router-dom'
 import { motion } from "framer-motion";
 import { useQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
-
 
 function Paper() {
 
@@ -18,8 +15,6 @@ function Paper() {
   const paramsNumber = Number(params.id)
 
   const navigate = useNavigate()
-
-
 
   // 상세보기 버튼 클릭 후 롤링페이퍼로 이동 시 해당 postId 데이터 가져오기 
   const get_My_Longlling_Paper = async () => {
@@ -31,16 +26,25 @@ function Paper() {
     = useQuery("get_My_Longlling_Paper", get_My_Longlling_Paper)
 
 
+  // 댓글 조회 기능 
+  const get_Comments = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/posts/${paramsNumber}/comments`)
+    return response.data.findAllComment
+  }
 
-  if (isLoading_get_My_Longlling_Paper) {
+  const { isError: isError_get_Comments, isLoading: isLoading_get_Comments, data: get_Comments_Data }
+    = useQuery("get_Comments", get_Comments)
+
+
+  if (isLoading_get_My_Longlling_Paper || isLoading_get_Comments) {
     return <div>Loading...</div>;
   }
 
-  if (isError_get_My_Longlling_Paper) {
+  if (isError_get_My_Longlling_Paper || isError_get_Comments) {
     return <div>Error occurred!</div>;
   }
 
-  if (get_My_Longlling_Paper_Data) {
+  if (get_My_Longlling_Paper_Data && get_Comments_Data) {
 
     return (
       <motion.div
@@ -65,18 +69,18 @@ function Paper() {
             }
           </StHeader>
           <StPaperBoxContainer>
-            {/* {
-            dataComment?.map((item) => {
-              return (
-                <StPaperBox key={item.id}>
-                  {item.comment}
-                  <DeleteButton onClick={() => { onDeleteButtonClickHandler(item.id) }}><FontAwesomeIcon icon={faTrash} /></DeleteButton>
-                </StPaperBox>
-              )
-            })
-          } */}
+            {
+              get_Comments_Data?.map((item) => {
+                return (
+                  <StPaperBox key={item.commentId}>
+                    {item.comment}
+                    <DeleteButton><FontAwesomeIcon icon={faTrash} /></DeleteButton>
+                  </StPaperBox>
+                )
+              })
+            }
           </StPaperBoxContainer>
-          <StWriteButton onClick={()=>{navigate('/addcomment')}}><FontAwesomeIcon icon={faPen} size='xl' beat style={{ color: "#ffffff" }} /></StWriteButton>
+          <StWriteButton onClick={() => { navigate('/addcomment', { state: { params1: paramsNumber } }) }}><FontAwesomeIcon icon={faPen} size='xl' beat style={{ color: "#ffffff" }} /></StWriteButton>
         </StContainer>
       </motion.div>
     )
@@ -84,6 +88,7 @@ function Paper() {
 }
 
 export default Paper
+
 
 const StContainer = styled.div`
   width: 500px;
