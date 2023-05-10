@@ -9,68 +9,73 @@ import { Add_longlling_Paper } from '../axios/api'
 
 
 function AddPaper() {
-    const navigate = useNavigate()
-    
-    const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
+  const navigate = useNavigate()
 
-    const onTitleHandler = (e) => {
-      setTitle(e.target.value)
-    }
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
 
-    const onContentHandler = (e) => {
-      setContent(e.target.value)
+  const onTitleHandler = (e) => {
+    setTitle(e.target.value)
+  }
+
+  const onContentHandler = (e) => {
+    setContent(e.target.value)
+  }
+
+  const mutation = useMutation(Add_longlling_Paper, {
+    onSuccess: () => {
+      console.log('Paper 등록 성공!');
+    },
+    onError: (error) => {
+      alert(error.response.data.errorMessage);
     }
-  
-    const mutation = useMutation(Add_longlling_Paper, {
-      onSuccess: () => {
-          console.log('Paper 등록 성공!');
-      },
-      onError: (error) => {
-          alert(error.response.data.errorMessage);
-      }
   });
 
 
   const onSubmitHandler = async () => {
+    if (title !== '' && content !== '') {
       try {
-          mutation.mutate({
-              title: title,
-              content: content
-          });
+        mutation.mutate({
+          title: title,
+          content: content
+        });
+        navigate('/home')
       } catch (error) {
-          console.log(error);
+        console.log(error);
       }
+    }else{
+      alert('제목과 한줄 소개글을 입력해주세요')
+    }
   };
 
 
 
-    const inputCount = title.length;
+  const inputCount = title.length;
 
-    return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 1.2 } }}
-            exit={{ opacity: 0, transition: { duration: 1.2 } }}
-        >
-            <StContainer>
-                <StBackButton onClick={() => { navigate("/home") }}><FontAwesomeIcon icon={faArrowLeft} size='xl' /></StBackButton>
-                <StInputArea>
-                    <StTitle>제목 입력</StTitle>
-                    <StInput placeholder='12자 이내로 적어주세요' onChange={onTitleHandler} value={title} maxLength="12"></StInput>
-                    <StWordCount>
-                        <span>{inputCount}</span>
-                        <span>/12 자</span>
-                    </StWordCount>
-                    <StComment>한줄 소개글</StComment>
-                    <StInput placeholder='소개글을 적어주세요' onChange={onContentHandler} value={content}></StInput>
-                </StInputArea>
-                <StSaveButtonContainer>
-                    <StSaveButton onClick={onSubmitHandler}>저장</StSaveButton>
-                </StSaveButtonContainer>
-            </StContainer>
-        </motion.div>
-    )
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 1.2 } }}
+      exit={{ opacity: 0, transition: { duration: 1.2 } }}
+    >
+      <StContainer>
+        <StBackButton onClick={() => { navigate("/home") }}><FontAwesomeIcon icon={faArrowLeft} size='xl' /></StBackButton>
+        <StInputArea>
+          <StTitle>제목 입력</StTitle>
+          <StInput placeholder='12자 이내로 적어주세요' onChange={onTitleHandler} value={title} maxLength="12"></StInput>
+          <StWordCount>
+            <span>{inputCount}</span>
+            <span>/12 자</span>
+          </StWordCount>
+          <StComment>한줄 소개글</StComment>
+          <StInput placeholder='소개글을 적어주세요' onChange={onContentHandler} value={content}></StInput>
+        </StInputArea>
+        <StSaveButtonContainer>
+          <StSaveButton onClick={onSubmitHandler}>저장</StSaveButton>
+        </StSaveButtonContainer>
+      </StContainer>
+    </motion.div>
+  )
 }
 
 
