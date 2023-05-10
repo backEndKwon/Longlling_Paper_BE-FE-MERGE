@@ -23,7 +23,7 @@ const Add_longlling_Paper = async (data) => {
 // 마이페이지 유저 데이터 가져오기
 const get_User_data = async () => {
     const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users`)
-    return response.data.data
+    return response.data.userInfo
 }
 
 // 마이페이지 나의 페이지 list 가져오기 
@@ -36,33 +36,9 @@ const get_My_Pages = async () => {
 // 상세보기 버튼 구현을 위한 각 페이지 별 postId 가져오기 
 const get_My_Pages_PostId = async () => {
     const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users`)
-    console.log(response.data.allMyPost)
     return response.data
 }
 
 
-const getComment = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/paper`)
-    return response.data
-}
-
-const getTitle = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/posts`)
-    return response.data
-}
-
-const addComment = async (newComment) => {
-    await axios.post(`${process.env.REACT_APP_SERVER_URL}/paper`, newComment)
-}
-
-const addPaper = async (newPaper) => {
-    await axios.post(`${process.env.REACT_APP_SERVER_URL}/posts`, newPaper)
-}
-
-const deleteComment = async (id) => {
-    await axios.delete(`${process.env.REACT_APP_SERVER_URL}/paper/${id}`)
-}
-
-
-export { getComment, addComment, deleteComment, getTitle, addPaper, signup, login, Add_longlling_Paper, get_User_data, get_My_Pages, get_My_Pages_PostId }
+export {signup, login, Add_longlling_Paper, get_User_data, get_My_Pages, get_My_Pages_PostId}
 

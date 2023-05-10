@@ -4,94 +4,92 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse } from "@fortawesome/free-solid-svg-icons"
 import { faPen } from "@fortawesome/free-solid-svg-icons"
 import { faTrash } from "@fortawesome/free-solid-svg-icons"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { motion } from "framer-motion";
-import { deleteComment, getTitle } from "../axios/api"
 import { useQuery, useQueryClient } from 'react-query'
-import { getComment } from '../axios/api'
-import { useMutation } from 'react-query'
+import axios from 'axios'
 
 
 function Paper() {
 
-  const [paper, setPaper] = useState()
+  const params = useParams()
 
-  const { isError: isErrorComment, isLoading: isLoadingComment, data: dataComment } = useQuery('comment', getComment)
-
-  const { isError: isErrorTitle, isLoading: isLoadingTitle, data: dataTitle } = useQuery('title', getTitle)
-
-
-  const queryClient = useQueryClient()
-  const mutation = useMutation(deleteComment, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("comment")
-    }
-  })
-
-  if (isLoadingComment) {
-    <h1>로딩 중입니다..!</h1>
-  }
-
-  if (isErrorComment) {
-    <h1>에러가 발생하였습니다..!</h1>
-  }
-
-  const onDeleteButtonClickHandler = async (id) => {
-    try {
-      mutation.mutate(id)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const paramsNumber = Number(params.id)
 
   const navigate = useNavigate()
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 1.2 } }}
-      exit={{ opacity: 0, transition: { duration: 1.2 } }}
-    >
-      <StContainer>
-        <StHeader>
-          <StHomeIcon onClick={() => { navigate('/') }}>
-            <FontAwesomeIcon icon={faHouse} size='xl' />
-          </StHomeIcon>
-          {
-            dataTitle?.map((item) => {
-              return (
-                <StTitle key={item.id}>
-                  {item.title}
-                </StTitle>
-              )
-            })
-          }
-          {
-            dataTitle?.map((item) => {
-              return (
-                <ContentHeader key={item.id}>
-                  {item.content}
-                </ContentHeader>
-              )
-            })
-          }
-        </StHeader>
-        <StPaperBoxContainer>
-          {
+
+
+  // 상세보기 버튼 클릭 후 롤링페이퍼로 이동 시 해당 postId 데이터 가져오기 
+  const get_My_Longlling_Paper = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/posts/${paramsNumber}/comments`)
+    return response.data.findOnePost
+  }
+
+  const { isError: isError_get_My_Longlling_Paper, isLoading: isLoading_get_My_Longlling_Paper, data: get_My_Longlling_Paper_Data }
+    = useQuery("get_My_Longlling_Paper", get_My_Longlling_Paper)
+
+
+
+  if (isLoading_get_My_Longlling_Paper) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError_get_My_Longlling_Paper) {
+    return <div>Error occurred!</div>;
+  }
+
+  if (get_My_Longlling_Paper_Data) {
+
+    console.log(get_My_Longlling_Paper_Data)
+  
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 1.2 } }}
+        exit={{ opacity: 0, transition: { duration: 1.2 } }}
+      >
+        <StContainer>
+          <StHeader>
+            <StHomeIcon onClick={() => { navigate('/') }}>
+              <FontAwesomeIcon icon={faHouse} size='xl' />
+            </StHomeIcon>
+            {
+          
+                
+                  <StTitle>
+                    {get_My_Longlling_Paper_Data.title}
+                  </StTitle>
+                
+              
+            }
+            {
+         
+               
+                  <ContentHeader>
+                    {get_My_Longlling_Paper_Data.content}
+                  </ContentHeader>
+                
+             
+            }
+          </StHeader>
+          <StPaperBoxContainer>
+            {/* {
             dataComment?.map((item) => {
-              return (               
+              return (
                 <StPaperBox key={item.id}>
                   {item.comment}
                   <DeleteButton onClick={() => { onDeleteButtonClickHandler(item.id) }}><FontAwesomeIcon icon={faTrash} /></DeleteButton>
                 </StPaperBox>
               )
             })
-          }
-        </StPaperBoxContainer>
-        <StWriteButton><FontAwesomeIcon icon={faPen} size='xl' beat style={{ color: "#ffffff" }} onClick={() => { navigate('/addcomment') }} /></StWriteButton>
-      </StContainer>
-    </motion.div>
-  )
+          } */}
+          </StPaperBoxContainer>
+          <StWriteButton><FontAwesomeIcon icon={faPen} size='xl' beat style={{ color: "#ffffff" }} /></StWriteButton>
+        </StContainer>
+      </motion.div>
+    )
+  }
 }
 
 export default Paper

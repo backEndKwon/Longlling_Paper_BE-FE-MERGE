@@ -19,7 +19,7 @@ const Router = () => {
                     <Route path="home" element={<Home />} />
                     <Route path="addpaper" element={<AddPaper />} />
                     <Route path="mypage" element={<Mypage />} />
-                    <Route path="paper" element={<Paper />} />
+                    <Route path="/:id" element={<Paper />} />
                     <Route path="addcomment" element={<AddComment />} />
                 </Routes>
             </AnimatePresence>

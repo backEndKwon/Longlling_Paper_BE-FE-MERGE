@@ -6,13 +6,13 @@ class UserController {
   userService = new UserService();
   //회원가입
   signup = async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'http://43.201.106.25:3000');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     const { nickname, password, email } = req.body;
     console.log(nickname, password, email);
     try {
       // 1) 3가지 값 입력여부 확인
       // 2) 닉네임, 이메일 중복 확인
-      //3) 회원가입 성공
+      // 3) 회원가입 성공
 
       // 1)
       if (!nickname) {
@@ -30,17 +30,19 @@ class UserController {
       const findOneEmail = await this.userService.findOneEmail(email);
 
       if (findOneNickname) {
-        return res.status(412).json({ errorMessage: '이미 존재하는 닉네임입니다.' });
+        return res.status(412).json({ errorMessage: '이미 사용중인 닉네임입니다.' });
       }
       if (findOneEmail) {
-        return res.status(412).json({ errorMessage: '이미 존재하는 이메일입니다.' });
+        return res.status(412).json({ errorMessage: '이미 사용중인 이메일입니다.' });
       }
       // 3)
       await this.userService.signup(nickname, password, email);
-      return res.status(200).json({ message: '회원가입 성공' });
+
+      return res.status(200).json({ message: '회원가입에 성공했습니다.' });
+
     } catch (err) {
       console.error(err);
-      return res.status(412).json({ errorMessage: 'catch 가입 실패' });
+      return res.status(400).json({ errorMessage: '요청한 데이터 형식이 올바르지 않습니다.' });
     }
   };
 
@@ -50,20 +52,20 @@ class UserController {
     try {
       const findOneEmail = await this.userService.findOneEmail(email);
       if (!findOneEmail) {
-        return res.status(412).json({ errorMessage: '이메일을 확인해주세요.' });
+        return res.status(412).json({ errorMessage: '닉네임을 확인해주세요' });
       }
       const findOnePassword = await this.userService.findOnePassword(password);
       if (!findOnePassword) {
-        return res.status(412).json({ errorMessage: '비밀번호를 확인해주세요.' });
+        return res.status(412).json({ errorMessage: '비밀번호를 확인해주세요' });
       }
       // setToken 함수를 사용하여 accessToken과 refreshToken을 생성합니다.
       const { accessToken, refreshToken } = setToken(findOneEmail.userId);
       res.cookie('accessToken', accessToken);
       res.cookie('refreshToken', refreshToken);
-      res.status(200).json({ message: '로그인 성공' });
+      res.status(200).json({ message: '로그인에 성공했습니다.' });
     } catch (err) {
       console.error(err);
-      return res.status(412).json({ errorMessage: '로그인 실패' });
+      return res.status(412).json({ errorMessage: '로그인에 실패했습니다.' });
     }
   };
 
@@ -72,16 +74,16 @@ class UserController {
     const { userId } = res.locals.user;
     try {
       if (!userId) {
-        return res.status(412).json({ errorMessage: '조회권한 없음' });
+        return res.status(412).json({ errorMessage: '조회권한이 없습니다.' });
       }
 
       const userInfo = await this.userService.findOneUserInfo(userId);
       const allMyPost = await this.userService.findAllPost(userId);
       const allMyComment = await this.userService.findAllComment(userId);
-      return res.status(200).json({ data: userInfo, allMyPost, allMyComment });
+      return res.status(200).json({ userInfo, allMyPost, allMyComment });
     } catch (err) {
       console.error(err);
-      return res.status(412).json({ errorMessage: '마이페이지 조회실패' });
+      return res.status(412).json({ errorMessage: '마이페이지 조회에 실패했습니다.' });
     }
   };
 
@@ -96,14 +98,14 @@ class UserController {
       if (!findOneComment) {
         return res
           .status(400)
-          .json({ errorMessage: '신고할 댓글이 없습니다.' });
+          .json({ errorMessage: '메세지을 찾을 수 없습니다.' });
       }
       //신고당할 유저ID찾기
       const user = await Users.findByPk(findOneComment.UserId);
       if (!user) {
         return res
           .status(400)
-          .json({ errorMessage: '댓글 작성자를 찾을 수 없습니다.' });
+          .json({ errorMessage: '메세지 작성자를 찾을 수 없습니다.' });
       }
 
       user.banCount += 1;
@@ -113,7 +115,7 @@ class UserController {
         await this.UserService.deleteUser(commentId)
         return res.status(200).json({
           message:
-            '부적절한 댓글작성 3회 이상으로 해당사용자는 서비스 이용이 중지되었습니다.',
+            '부적절한 메세지작성 3회 이상으로 해당사용자는 서비스 이용이 중지되었습니다.',
         });
       }
       //신고 받은 댓글 삭제
@@ -122,7 +124,7 @@ class UserController {
     } catch (err) {
       console.error(err);
       return res.status(200).json({
-        message: '댓글 신고에 실패하였습니다.',
+        message: '메세지 신고에 실패하였습니다.',
       });
     }
   };

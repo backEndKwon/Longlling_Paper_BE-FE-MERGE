@@ -67,11 +67,11 @@ function Mypage() {
               <Tab eventKey="profile" title="내 롤링페이퍼">
                 <MyLRP>
                   {myPagesData.map((item) => (
-                    <Card border="dark" style={{ width: '40rem' }}>
-                      <Link to={`/paper`}
+                    <Card border="dark" style={{ width: '40rem' }} key={item.postId}>
+                      <Link to={`/${item.postId}`}
                         style={{
                           textDecorationLine: "none",
-                        }}>상세보기</Link>
+                        }}>상세보기, ID:{item.postId}</Link>
                       {/* <Card.Header>{card.title}</Card.Header> */}
                       <Card.Body>
                         <Card.Text>{item.title}</Card.Text>
