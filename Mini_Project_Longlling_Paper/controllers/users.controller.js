@@ -50,7 +50,7 @@ class UserController {
     try {
       const findOneEmail = await this.userService.findOneEmail(email);
       if (!findOneEmail) {
-        return res.status(412).json({ errorMessage: '닉네임을 확인해주세요.' });
+        return res.status(412).json({ errorMessage: '이메일을 확인해주세요.' });
       }
       const findOnePassword = await this.userService.findOnePassword(password);
       if (!findOnePassword) {

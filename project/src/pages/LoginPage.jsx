@@ -28,7 +28,7 @@ function LoginPage() {
         navigate('home');
     },
     onError: (error) => {
-        alert(error.response.data.errorMessgae);
+        alert(error.response.data.errorMessage);
     }
 });
 

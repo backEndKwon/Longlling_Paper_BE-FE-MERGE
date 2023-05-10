@@ -15,6 +15,7 @@ const login = async (data) => {
     await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/login`, data, { withCredentials: true })
 }
 
+//롱링 페이퍼 생성
 const Add_longlling_Paper = async (data) => {
     await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/posts`, data, { withCredentials: true })
 }

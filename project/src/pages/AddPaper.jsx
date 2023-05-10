@@ -4,8 +4,8 @@ import styled from "styled-components"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { motion } from "framer-motion"
-import { useQueryClient, useMutation } from 'react-query'
-import { addPaper } from '../axios/api';
+import { useMutation } from 'react-query'
+import { Add_longlling_Paper } from '../axios/api'
 
 
 function AddPaper() {
@@ -21,11 +21,28 @@ function AddPaper() {
     const onContentHandler = (e) => {
       setContent(e.target.value)
     }
-    
+  
+    const mutation = useMutation(Add_longlling_Paper, {
+      onSuccess: () => {
+          console.log('Paper 등록 성공!');
+      },
+      onError: (error) => {
+          alert(error.response.data.errorMessage);
+      }
+  });
 
-    console.log(title)
-    console.log(content)
-    
+
+  const onSubmitHandler = async () => {
+      try {
+          mutation.mutate({
+              title: title,
+              content: content
+          });
+      } catch (error) {
+          console.log(error);
+      }
+  };
+
 
 
     const inputCount = title.length;
@@ -37,7 +54,7 @@ function AddPaper() {
             exit={{ opacity: 0, transition: { duration: 1.2 } }}
         >
             <StContainer>
-                <StBackButton onClick={() => { navigate("/") }}><FontAwesomeIcon icon={faArrowLeft} size='xl' /></StBackButton>
+                <StBackButton onClick={() => { navigate("/home") }}><FontAwesomeIcon icon={faArrowLeft} size='xl' /></StBackButton>
                 <StInputArea>
                     <StTitle>제목 입력</StTitle>
                     <StInput placeholder='12자 이내로 적어주세요' onChange={onTitleHandler} value={title} maxLength="12"></StInput>
@@ -49,7 +66,7 @@ function AddPaper() {
                     <StInput placeholder='소개글을 적어주세요' onChange={onContentHandler} value={content}></StInput>
                 </StInputArea>
                 <StSaveButtonContainer>
-                    <StSaveButton>저장</StSaveButton>
+                    <StSaveButton onClick={onSubmitHandler}>저장</StSaveButton>
                 </StSaveButtonContainer>
             </StContainer>
         </motion.div>
