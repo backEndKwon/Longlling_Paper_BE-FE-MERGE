@@ -10,45 +10,25 @@ import { addPaper } from '../axios/api';
 
 function AddPaper() {
     const navigate = useNavigate()
-    const [inputValue, setInputValue] = useState({
-        title: '',
-        content: '',
-    })
+    
+    const [title, setTitle] = useState('')
+    const [content, setContent] = useState('')
 
     const onTitleHandler = (e) => {
-        setInputValue(prev => ({ ...prev, title: e.target.value }));
-    };
+      setTitle(e.target.value)
+    }
 
     const onContentHandler = (e) => {
-        setInputValue(prev => ({ ...prev, content: e.target.value }))
+      setContent(e.target.value)
     }
+    
+
+    console.log(title)
+    console.log(content)
+    
 
 
-
-    const queryClient = useQueryClient()
-    const mutation = useMutation(addPaper, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("comment")
-        }
-    })
-
-
-    const onSubmitHandler = async () => {
-        if (inputValue.title.length > 0 && inputValue.content.length > 0) {
-            try {
-                mutation.mutate(inputValue)
-                navigate('/paper')
-            } catch (error) {
-                console.log(error)
-            }
-        
-        }
-        else{
-            return alert('제목과 한줄소개글을 입력해주세요.')
-        }
-    }
-
-    const inputCount = inputValue.title.length;
+    const inputCount = title.length;
 
     return (
         <motion.div
@@ -60,16 +40,16 @@ function AddPaper() {
                 <StBackButton onClick={() => { navigate("/") }}><FontAwesomeIcon icon={faArrowLeft} size='xl' /></StBackButton>
                 <StInputArea>
                     <StTitle>제목 입력</StTitle>
-                    <StInput placeholder='12자 이내로 적어주세요' onChange={onTitleHandler} value={inputValue.title} maxLength="12"></StInput>
+                    <StInput placeholder='12자 이내로 적어주세요' onChange={onTitleHandler} value={title} maxLength="12"></StInput>
                     <StWordCount>
                         <span>{inputCount}</span>
                         <span>/12 자</span>
                     </StWordCount>
                     <StComment>한줄 소개글</StComment>
-                    <StInput placeholder='소개글을 적어주세요' value={inputValue.content} onChange={onContentHandler}></StInput>
+                    <StInput placeholder='소개글을 적어주세요' onChange={onContentHandler} value={content}></StInput>
                 </StInputArea>
                 <StSaveButtonContainer>
-                    <StSaveButton onClick={onSubmitHandler}>저장</StSaveButton>
+                    <StSaveButton>저장</StSaveButton>
                 </StSaveButtonContainer>
             </StContainer>
         </motion.div>

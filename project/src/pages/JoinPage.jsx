@@ -24,22 +24,39 @@ function JoinPage() {
     const [pwValid, setPwValid] = useState(false)
 
 
-    const queryClient = useQueryClient()
     const mutation = useMutation(signup, {
         onSuccess: () => {
-            console.log('서버 연결 성공!')
+            console.log('회원가입 성공');
+            navigate('/');
+        },
+        onError: (error) => {
+            alert(error.response.data.errorMessage);
         }
-    })
+    });
 
 
-    const onSubmitHandler = async () => { 
+    const onSubmitHandler = async () => {
+        if (validateForm() === false) {
+            alert('비밀번호가 일치하지 않습니다')
+            return;
+        }
+
+        if (!emailValid) {
+            alert('이메일 양식에 맞게 작성해주세요')
+            return;
+        }
+
+        if (!pwValid) {
+            alert('최소 8자 이상의 소문자와 숫자를 입력해주세요')
+            return;
+        }
+
         try {
-            mutation.mutate({ 
+            mutation.mutate({
                 nickname: nickname,
                 email: email,
                 password: password,
             });
-            navigate('/'); 
         } catch (error) {
             console.log(error);
         }

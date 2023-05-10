@@ -3,43 +3,21 @@ import axios from "axios";
 // axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'https://kimchaeminthegreat.shop';
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'https://kimchaeminthegreat.shop';
 
-const instance = axios.create({
-    baseURL: process.env.REACT_APP_SERVER_URL,
 
-})
 
-instance.interceptors.request.use(
-
-    function (config) {
-        console.log('인터셉터 요청 성공!')
-        return config
-    },
-
-    function (error) {
-        console.log('인터셉터 요청 오류!')
-        return Promise.reject(error)
-    }
-)
-
-instance.interceptors.response.use(
-
-    function (response) {
-        console.log('인터셉터 응답 받았습니다!')
-        return response
-    },
-
-    function (error) {
-        console.log('인터셉터 응답 오류 발생!')
-        return Promise.reject(error)
-    }
-)
-
-/////////////////////////////////////////////////////////////////// 아래는 react-query
-
-const signup = async (user) => {
-    await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/signup`, user, { withCredentials : true })
+// 회원가입
+const signup = async (data) => {
+    await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/signup`, data, { withCredentials: true })
 }
 
+// 로그인
+const login = async (data) => {
+    await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/login`, data, { withCredentials: true })
+}
+
+const Add_longlling_Paper = async (data) => {
+    await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/posts`, data, { withCredentials: true })
+}
 
 const getComment = async () => {
     const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/paper`)
@@ -64,6 +42,5 @@ const deleteComment = async (id) => {
 }
 
 
-export default instance;
-export { getComment, addComment, deleteComment, getTitle, addPaper, signup }
+export { getComment, addComment, deleteComment, getTitle, addPaper, signup, login, Add_longlling_Paper }
 

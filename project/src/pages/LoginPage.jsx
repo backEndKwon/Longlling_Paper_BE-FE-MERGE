@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion";
-import { users } from '../axios/api';
-import { useQuery } from 'react-query';
+import { useMutation } from 'react-query';
+import { login } from '../axios/api';
 
 
 function LoginPage() {
@@ -19,6 +19,35 @@ function LoginPage() {
   // 이메일, 비번 조건 충족 시 로그인버튼 활성화
   const [notAllow, setNotAllow] = useState(true)
 
+
+
+  // 서버 통신 부분 
+  const mutation = useMutation(login, {
+    onSuccess: () => {
+        console.log('로그인 성공!');
+        navigate('home');
+    },
+    onError: (error) => {
+        alert(error.response.data.errorMessgae);
+    }
+});
+
+
+const onSubmitHandler = async () => {
+  try {
+      mutation.mutate({
+          email: email,
+          password: pw,
+      });
+  } catch (error) {
+      console.log(error);
+  }
+};
+
+
+
+
+
   const handleEmail = (e) => {
     setEmail(e.target.value)
     const regex =
@@ -29,17 +58,19 @@ function LoginPage() {
       setEmailValid(false)
     }
   }
+
   const handlePassword = (e) => {
     setPw(e.target.value)
     const regex =
       // 최소 8자 이상의 소문자와 숫자
-      /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$/
+      /^(?=.*[a-z])(?=.*\d)[a-z\d]{7,}$/
     if (regex.test(pw)) {
       setPwValid(true)
     } else {
       setPwValid(false)
     }
   }
+
   useEffect(() => {
     // state값이 변화가 일어날 때마다 코드가 실행됨
     // emailValid && pwValid가 모두 true이면 버튼 비활성화 -> 활성화로 return
@@ -94,7 +125,7 @@ function LoginPage() {
 
         <BtnBox>
           <BottomBtn onClick={() => { navigate("/joinPage") }}>회원 가입</BottomBtn>
-          <BottomBtn disabled={notAllow}>로그인</BottomBtn>
+          <BottomBtn disabled={notAllow} onClick={onSubmitHandler}>로그인</BottomBtn>
         </BtnBox>
 
       </Page>
