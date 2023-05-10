@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { motion } from "framer-motion";
 import { useQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 
 
 function Paper() {
@@ -41,8 +42,6 @@ function Paper() {
 
   if (get_My_Longlling_Paper_Data) {
 
-    console.log(get_My_Longlling_Paper_Data)
-  
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -51,26 +50,18 @@ function Paper() {
       >
         <StContainer>
           <StHeader>
-            <StHomeIcon onClick={() => { navigate('/') }}>
-              <FontAwesomeIcon icon={faHouse} size='xl' />
+            <StHomeIcon onClick={() => { navigate('/mypage') }}>
+              <FontAwesomeIcon icon={faArrowLeft} size='xl' />
             </StHomeIcon>
             {
-          
-                
-                  <StTitle>
-                    {get_My_Longlling_Paper_Data.title}
-                  </StTitle>
-                
-              
+              <StTitle>
+                {get_My_Longlling_Paper_Data.title}
+              </StTitle>
             }
             {
-         
-               
-                  <ContentHeader>
-                    {get_My_Longlling_Paper_Data.content}
-                  </ContentHeader>
-                
-             
+              <ContentHeader>
+                {get_My_Longlling_Paper_Data.content}
+              </ContentHeader>
             }
           </StHeader>
           <StPaperBoxContainer>
@@ -85,7 +76,7 @@ function Paper() {
             })
           } */}
           </StPaperBoxContainer>
-          <StWriteButton><FontAwesomeIcon icon={faPen} size='xl' beat style={{ color: "#ffffff" }} /></StWriteButton>
+          <StWriteButton onClick={()=>{navigate('/addcomment')}}><FontAwesomeIcon icon={faPen} size='xl' beat style={{ color: "#ffffff" }} /></StWriteButton>
         </StContainer>
       </motion.div>
     )

@@ -5,19 +5,45 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import { useMutation, useQueryClient } from 'react-query';
+import axios from 'axios';
 
 function AddComment() {
     const navigate = useNavigate()
 
-    
- 
-    const [inputValue, setInputValue] = useState({
-        comment: '',
-    })
+    const [inputValue, setInputValue] = useState('')
 
     const inputValueHandler = (e) => {
-        setInputValue({ comment: e.target.value })
+        setInputValue(e.target.value)
     }
+
+
+
+    // comment(댓글) 추가 기능 
+    const Add_Comment = async (data) => {
+        await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/posts/:postId/comments`, data, { withCredentials: true })
+    }
+
+
+    // 서버 통신 부분 
+    const mutation = useMutation(Add_Comment, {
+        onSuccess: () => {
+            console.log('댓글 생성 성공!');
+        },
+        onError: (error) => {
+            alert(error.response.data.errorMessage);
+        }
+    });
+
+
+    const onSubmitHandler = async () => {
+        try {
+            mutation.mutate({
+                comment : inputValue
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
 
 
@@ -30,14 +56,15 @@ function AddComment() {
             <Background>
                 <Layout>
                     <Header>
-                        <BackButton onClick={() => { navigate('/paper') }}>
+                        <BackButton onClick={() => { navigate(-1) }}>
                             <FontAwesomeIcon icon={faArrowLeft} size='xl' />
                         </BackButton>
                     </Header>
                     <form onSubmit={(e) => {
                         e.preventDefault(e)
+                        onSubmitHandler()
                     }}>
-                        <TextArea rows={15} cols={30} value={inputValue.comment} onChange={inputValueHandler}></TextArea>
+                        <TextArea rows={8} cols={30} value={inputValue.comment} onChange={inputValueHandler}></TextArea>
                         <Footer>
                             <SaveButton type="submit">저장</SaveButton>
                         </Footer>
@@ -77,6 +104,7 @@ const BackButton = styled.button`
     cursor: pointer;
     padding: 20px;
     margin-left: -440px;
+    margin-bottom: 65px;
 `
 
 const Header = styled.div`
@@ -142,6 +170,7 @@ const Footer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 30px;
 `
 
 const TextArea = styled.textarea`
