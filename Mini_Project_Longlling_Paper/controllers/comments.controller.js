@@ -15,7 +15,9 @@ class CommentController {
           .json({ errorMessage: '롤링페이퍼가 존재하지않습니다.' });
       }
       if (!comment) {
-        return res.status(403).json({ errorMessage: '친구에게 남길 메세지를 작성해주세요.' });
+        return res
+          .status(403)
+          .json({ errorMessage: '친구에게 남길 메세지를 작성해주세요.' });
       }
       const createPostData = await this.commentService.createComment(
         comment,
@@ -25,11 +27,13 @@ class CommentController {
       return res.status(200).json({ message: '메세지을 작성하였습니다.' });
     } catch (err) {
       console.error(err);
-      return res.status(403).json({ errorMessage: '메세지 작성에 실패했습니다.' });
+      return res
+        .status(403)
+        .json({ errorMessage: '메세지 작성에 실패했습니다.' });
     }
   };
 
-  //롱링 페이퍼 상세보기
+  //댓글 상세조회
   detailComment = async (req, res, next) => {
     const { postId } = req.params;
     try {
@@ -43,7 +47,6 @@ class CommentController {
         .json({ errorMessage: '나에게 달린 메세지 조회 실패' });
     }
   };
-
 }
 
 module.exports = CommentController;

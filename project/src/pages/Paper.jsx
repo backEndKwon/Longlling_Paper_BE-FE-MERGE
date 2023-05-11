@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { motion } from "framer-motion";
 import { useQuery } from 'react-query'
 import axios from 'axios'
+import { useMutation } from "react-query";
+import { useQueryClient } from "react-query";
 
 
 function Paper() {
@@ -14,6 +16,8 @@ function Paper() {
   const paramsNumber = Number(params.id)
 
   const navigate = useNavigate()
+
+  const queryClient = useQueryClient()
 
   // 상세보기 버튼 클릭 후 롤링페이퍼로 이동 시 해당 postId 데이터 가져오기 
   const get_My_Longlling_Paper = async () => {
@@ -33,6 +37,32 @@ function Paper() {
 
   const { isError: isError_get_Comments, isLoading: isLoading_get_Comments, data: get_Comments_Data }
     = useQuery("get_Comments", get_Comments)
+
+
+  // 댓글 신고 기능
+  const report_Comment = async (commentId) => {
+    const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/comments/${commentId}/report`, { withCredentials: true })
+    return response
+  }
+
+  const mutation = useMutation(report_Comment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get_Comments")
+      console.log('댓글 신고 성공!');
+    },
+    onError: (error) => {
+      alert(error.response.data.errorMessage);
+    }
+  });
+
+
+  const onSubmitHandler = async (commentId) => {
+    try {
+      await mutation.mutateAsync(commentId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 
   if (isLoading_get_My_Longlling_Paper || isLoading_get_Comments) {
@@ -73,7 +103,9 @@ function Paper() {
                 return (
                   <StPaperBox key={item.commentId}>
                     {item.comment}
-                    <DeleteButton><FontAwesomeIcon icon={faBell} /></DeleteButton>
+                    <DeleteButton onClick={() => { onSubmitHandler(item.commentId) }}>
+                      <FontAwesomeIcon icon={faBell} />
+                    </DeleteButton>
                   </StPaperBox>
                 )
               })

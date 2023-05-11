@@ -24,7 +24,6 @@ function LoginPage() {
   // 서버 통신 부분 
   const mutation = useMutation(login, {
     onSuccess: () => {
-        console.log('로그인 성공!');
         navigate('home');
     },
     onError: (error) => {

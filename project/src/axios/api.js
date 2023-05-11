@@ -12,7 +12,9 @@ const signup = async (data) => {
 
 // 로그인
 const login = async (data) => {
-    await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/login`, data, { withCredentials: true })
+    const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/login`, data, { withCredentials: true })
+    console.log(response.data.message)
+    return response.data.message
 }
 
 // 롱링 페이퍼 생성
@@ -46,8 +48,6 @@ const get_My_Pages_PostId = async () => {
     const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/users`)
     return response.data
 }
-
-
 
 
 
