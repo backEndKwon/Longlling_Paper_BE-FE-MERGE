@@ -46,8 +46,6 @@ const onSubmitHandler = async () => {
 
 
 
-
-
   const handleEmail = (e) => {
     setEmail(e.target.value)
     const regex =

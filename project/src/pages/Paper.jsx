@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
 import styled from "styled-components"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen, faTrash} from "@fortawesome/free-solid-svg-icons"
+import { faPen, faArrowLeft, faBell } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, useParams } from 'react-router-dom'
 import { motion } from "framer-motion";
-import { useQuery, useQueryClient } from 'react-query'
+import { useQuery } from 'react-query'
 import axios from 'axios'
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
+
 
 function Paper() {
 
@@ -54,7 +53,7 @@ function Paper() {
       >
         <StContainer>
           <StHeader>
-            <StHomeIcon onClick={() => { navigate('/mypage') }}>
+            <StHomeIcon onClick={() => { navigate(-1) }}>
               <FontAwesomeIcon icon={faArrowLeft} size='xl' />
             </StHomeIcon>
             {
@@ -74,7 +73,7 @@ function Paper() {
                 return (
                   <StPaperBox key={item.commentId}>
                     {item.comment}
-                    <DeleteButton><FontAwesomeIcon icon={faTrash} /></DeleteButton>
+                    <DeleteButton><FontAwesomeIcon icon={faBell} /></DeleteButton>
                   </StPaperBox>
                 )
               })

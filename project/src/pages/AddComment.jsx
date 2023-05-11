@@ -68,6 +68,7 @@ function AddComment() {
                     <form onSubmit={(e) => {
                         e.preventDefault(e)
                         onSubmitHandler()
+                        navigate(-1)
                     }}>
                         <TextArea rows={8} cols={30} value={inputValue} onChange={inputValueHandler}></TextArea>
                         <Footer>

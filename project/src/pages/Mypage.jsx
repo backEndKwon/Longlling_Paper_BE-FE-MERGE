@@ -8,35 +8,65 @@ import Tabs from 'react-bootstrap/Tabs';
 import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { get_User_data, get_My_Pages, get_My_Pages_PostId } from '../axios/api';
-import { useQuery } from 'react-query';
+import { get_User_data, get_My_Pages, get_My_Pages_PostId, get_My_Comments} from '../axios/api';
+import { useQuery, useQueryClient } from 'react-query';
 import { motion } from "framer-motion"
+import { useMutation } from 'react-query';
+import axios from 'axios';
 
 
 
 function Mypage() {
   const navigate = useNavigate();
   const locatin = useLocation()
-
-  const MyComment = [
-    { title: "졸업 롤링페이퍼", comment: "졸업을 축하해!" },
-    { title: "!! 롤링페이퍼", comment: "!!을 축하해!" },
-  ];
+  const queryClient = useQueryClient()
 
   const { isError: isErrorUserData, isLoading: isLoadingUserData, data: userData } = useQuery("get_User_data", get_User_data)
   const { isError: isErrorMyPages, isLoading: isLoadingMyPages, data: myPagesData } = useQuery("get_My_Pages", get_My_Pages)
+  const { isError: isError_get_My_Comments, isLoading: isLoading_get_My_Comments, data: get_My_Comments_Data } = useQuery("get_My_Comments", get_My_Comments)
   const { isError: isError_get_My_Pages_PostId, isLoading: isLoading_get_My_Pages_PostId, data: get_My_Pages_PostId_Data } = useQuery("get_My_Pages_PostId", get_My_Pages_PostId)
 
 
-  if (isLoadingUserData || isLoadingMyPages) {
+
+
+
+  // 롤링페이지 삭제 
+  const delete_My_Pages = async (PostId) => {
+    const response = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/api/posts/${PostId}`)
+    console.log(response)
+    return response.data
+  }
+
+
+  const mutation = useMutation(delete_My_Pages, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get_My_Pages")
+      console.log('삭제 성공!');
+    },
+    onError: (error) => {
+      alert(error.response.data.errorMessage);
+    }
+  });
+
+
+  const onDeleteHandler = async (PostId) => {
+    try {
+      mutation.mutate(PostId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  if (isLoadingUserData || isLoadingMyPages || isLoading_get_My_Comments) {
     return <div>Loading...</div>;
   }
 
-  if (isErrorUserData || isErrorMyPages) {
+  if (isErrorUserData || isErrorMyPages || isError_get_My_Comments) {
     return <div>Error occurred!</div>;
   }
 
-  if (userData && myPagesData) {
+  if (userData && myPagesData && get_My_Comments_Data) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -68,13 +98,15 @@ function Mypage() {
                 <MyLRP>
                   {myPagesData.map((item) => (
                     <Card border="dark" style={{ width: '40rem' }} key={item.postId}>
-                      <Link to={`/${item.postId}`}
-                        style={{
-                          textDecorationLine: "none",
-                        }}>상세보기, ID:{item.postId}</Link>
-                      {/* <Card.Header>{card.title}</Card.Header> */}
+                      <LinkWrapper>
+                        <Link to={`/${item.postId}`}
+                          style={{
+                            textDecorationLine: "none",
+                          }}>상세보기</Link>
+                      </LinkWrapper>
                       <Card.Body>
                         <Card.Text>{item.title}</Card.Text>
+                        <Delete_Button onClick={()=>onDeleteHandler(item.postId)}>삭제</Delete_Button>
                       </Card.Body>
                     </Card>
                   ))}
@@ -84,15 +116,16 @@ function Mypage() {
 
               <Tab eventKey="home" title="내가 적은 메세지">
                 <MyCom>
-                  {MyComment.map((card) => (
-                    <Card border="dark" style={{ width: '40rem' }}>
-                      {/* <Card.Header>{card.title}</Card.Header> */}
-                      <Link to={`/paper`}
-                        style={{
-                          textDecorationLine: "none"
-                        }}>상세보기</Link>
+                  {get_My_Comments_Data.map((item) => (
+                    <Card border="dark" style={{ width: '40rem' }} key={item.PostId}>
+                      <LinkWrapper>
+                        <Link to={`/${item.PostId}`}
+                          style={{
+                            textDecorationLine: "none"
+                          }}>상세보기</Link>
+                      </LinkWrapper>
                       <Card.Body>
-                        <Card.Text>{card.comment}</Card.Text>
+                        <Card.Text>{item.comment}</Card.Text>
                       </Card.Body>
                     </Card>
                   ))}
@@ -123,7 +156,7 @@ const Page = styled.div`
 
   background-color: #F7F7F7;
   // 버튼을 가장 하단에 배치하기 위해
-  overflow: hidden;
+  overflow-y: scroll;
 
   display: flex;
   flex-direction: column;
@@ -142,6 +175,7 @@ const MyLRP = styled.div`
   padding: 10px 0;
   border : none;
 `
+
 const MyCom = styled.div`
   display: flex;
   flex-direction: column-reverse;
@@ -150,3 +184,17 @@ const MyCom = styled.div`
   gap: 10px;
   padding: 10px 0;
 `
+
+const Delete_Button = styled.div`
+  border: none;
+  background: #eee;
+  border-radius: 10px;
+  width: 50px;
+  text-align: center;
+  cursor: pointer;
+`
+
+const LinkWrapper = styled.div`
+  padding-left: 16px;
+  padding-top: 5px;
+`;

@@ -16,7 +16,6 @@ router.post(
 // 내 롤링페이퍼 댓글 상세조회
 router.get(
   '/posts/:postId/comments',
-  authMiddleware,
   commentController.detailComment,
 );
 

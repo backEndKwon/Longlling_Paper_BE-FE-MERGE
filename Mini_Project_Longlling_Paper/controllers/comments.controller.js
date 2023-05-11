@@ -29,17 +29,11 @@ class CommentController {
     }
   };
 
-  //댓글 상세조회
+  //롱링 페이퍼 상세보기
   detailComment = async (req, res, next) => {
-    const { userId } = res.locals.user;
     const { postId } = req.params;
     try {
       const findOnePost = await this.commentService.findOnePost(postId);
-      console.log(userId);
-      console.log(findOnePost.UserId);
-      if (userId !== findOnePost.UserId) {
-        return res.status(403).json({ errorMessage: '댓글 조회 권한이 없습니다.' });
-      }
       const findAllComment = await this.commentService.findAllComment(postId);
       return res.status(200).json({ findOnePost, findAllComment });
     } catch (err) {
