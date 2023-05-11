@@ -48,6 +48,7 @@ function Paper() {
   const mutation = useMutation(report_Comment, {
     onSuccess: () => {
       queryClient.invalidateQueries("get_Comments")
+      alert('댓글 신고완료!')
     },
     onError: (error) => {
       alert(error.response.data.errorMessage);
