@@ -8,7 +8,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import { Card } from 'react-bootstrap';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { get_User_data, get_My_Pages, get_My_Pages_PostId, get_My_Comments} from '../axios/api';
+import { get_User_data, get_My_Pages, get_My_Pages_PostId, get_My_Comments } from '../axios/api';
 import { useQuery, useQueryClient } from 'react-query';
 import { motion } from "framer-motion"
 import { useMutation } from 'react-query';
@@ -103,10 +103,11 @@ function Mypage() {
                           style={{
                             textDecorationLine: "none",
                           }}>상세보기</Link>
+                        <Id>ID : {item.postId}</Id>
                       </LinkWrapper>
                       <Card.Body>
                         <Card.Text>{item.title}</Card.Text>
-                        <Delete_Button onClick={()=>onDeleteHandler(item.postId)}>삭제</Delete_Button>
+                        <Delete_Button onClick={() => onDeleteHandler(item.postId)}>삭제</Delete_Button>
                       </Card.Body>
                     </Card>
                   ))}
@@ -198,3 +199,8 @@ const LinkWrapper = styled.div`
   padding-left: 16px;
   padding-top: 5px;
 `;
+
+const Id = styled.div`
+  margin-left: auto;
+  font-weight: bold;
+`

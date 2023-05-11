@@ -3,12 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 
 
 function Home() {
 
   const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState('');
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      navigate(`/${inputValue}`);
+    }
+  };
 
   return (
     <motion.div
@@ -29,7 +37,12 @@ function Home() {
           Longlling Paper
         </StCenterTitle>
         <InputContainer>
-          <StInput placeholder='링크를 복사 후, 입력창에 붙여넣기해주세요.'></StInput>
+          <StInput
+            value={inputValue}
+            onChange={(e) => { setInputValue(e.target.value) }}
+            onKeyDown={handleKeyDown}
+            placeholder='페이지 고유번호를 입력해주세요.'
+          />
         </InputContainer>
         <StAddContainer>
           <StAddPaper onClick={() => { navigate("/addpaper") }}>내 롤링페이퍼 만들기</StAddPaper>
@@ -40,7 +53,6 @@ function Home() {
 }
 
 export default Home
-
 
 const StContainer = styled.div`
   width: 700px;
