@@ -39,7 +39,6 @@ const onSubmitHandler = async () => {
           password: pw,
       });
   } catch (error) {
-      console.log(error);
   }
 };
 

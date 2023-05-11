@@ -33,7 +33,6 @@ function Mypage() {
   // 롤링페이지 삭제 
   const delete_My_Pages = async (PostId) => {
     const response = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/api/posts/${PostId}`)
-    console.log(response)
     return response.data
   }
 
@@ -41,7 +40,6 @@ function Mypage() {
   const mutation = useMutation(delete_My_Pages, {
     onSuccess: () => {
       queryClient.invalidateQueries("get_My_Pages")
-      console.log('삭제 성공!');
     },
     onError: (error) => {
       alert(error.response.data.errorMessage);
@@ -53,7 +51,6 @@ function Mypage() {
     try {
       mutation.mutate(PostId);
     } catch (error) {
-      console.log(error);
     }
   };
 

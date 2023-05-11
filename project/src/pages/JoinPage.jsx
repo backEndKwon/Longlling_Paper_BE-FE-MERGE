@@ -26,7 +26,6 @@ function JoinPage() {
 
     const mutation = useMutation(signup, {
         onSuccess: () => {
-            console.log('회원가입 성공');
             navigate('/');
         },
         onError: (error) => {
@@ -58,7 +57,7 @@ function JoinPage() {
                 password: password,
             });
         } catch (error) {
-            console.log(error);
+
         }
     };
 

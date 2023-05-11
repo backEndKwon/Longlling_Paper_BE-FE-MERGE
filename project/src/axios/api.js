@@ -13,7 +13,6 @@ const signup = async (data) => {
 // 로그인
 const login = async (data) => {
     const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/login`, data, { withCredentials: true })
-    console.log(response.data.message)
     return response.data.message
 }
 

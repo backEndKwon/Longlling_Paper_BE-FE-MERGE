@@ -24,7 +24,6 @@ function AddPaper() {
 
   const mutation = useMutation(Add_longlling_Paper, {
     onSuccess: () => {
-      console.log('Paper 등록 성공!');
     },
     onError: (error) => {
       alert(error.response.data.errorMessage);
@@ -41,7 +40,6 @@ function AddPaper() {
         });
         navigate('/home')
       } catch (error) {
-        console.log(error);
       }
     }else{
       alert('제목과 한줄 소개글을 입력해주세요')

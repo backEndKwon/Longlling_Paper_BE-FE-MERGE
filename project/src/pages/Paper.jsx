@@ -48,7 +48,6 @@ function Paper() {
   const mutation = useMutation(report_Comment, {
     onSuccess: () => {
       queryClient.invalidateQueries("get_Comments")
-      console.log('댓글 신고 성공!');
     },
     onError: (error) => {
       alert(error.response.data.errorMessage);
@@ -60,7 +59,7 @@ function Paper() {
     try {
       await mutation.mutateAsync(commentId);
     } catch (error) {
-      console.log(error);
+
     }
   };
 

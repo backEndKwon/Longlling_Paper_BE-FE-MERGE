@@ -32,7 +32,6 @@ function AddComment() {
     // 서버 통신 부분 
     const mutation = useMutation(Add_Comment, {
         onSuccess: () => {
-            console.log('댓글 생성 성공!');
         },
         onError: (error) => {
             alert(error.response.data.errorMessage);
@@ -46,7 +45,7 @@ function AddComment() {
                 comment : inputValue
             });
         } catch (error) {
-            console.log(error);
+
         }
     };
 

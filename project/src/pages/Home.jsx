@@ -41,7 +41,7 @@ function Home() {
             value={inputValue}
             onChange={(e) => { setInputValue(e.target.value) }}
             onKeyDown={handleKeyDown}
-            placeholder='페이지 고유번호를 입력해주세요.'
+            placeholder='전달 받은 페이지 고유번호를 입력해주세요.'
           />
         </InputContainer>
         <StAddContainer>
